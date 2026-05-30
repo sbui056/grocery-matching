@@ -140,7 +140,7 @@ async def _call_llm(
                     {"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": prompt},
                 ],
-                "max_completion_tokens": 200,
+                "max_completion_tokens": 500,
                 "temperature": pipeline_config.llm_temperature,
                 "response_format": {"type": "json_object"},
             },

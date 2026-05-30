@@ -133,13 +133,13 @@ class PipelineConfig:
     # LLM
     llm_products_per_call: int = 5
     llm_candidates_per_product: int = 3
-    llm_concurrency: int = 20
+    llm_concurrency: int = 50
     llm_temperature: float = 0.0
 
     # Thresholds
     auto_include_threshold: float = 0.60
-    llm_low_confidence_threshold: float = 0.60
-    exclude_threshold: float = 0.35
+    llm_low_confidence_threshold: float = 0.55
+    exclude_threshold: float = 0.45
     unknown_category_threshold: float = 0.60
 
     # Retry
