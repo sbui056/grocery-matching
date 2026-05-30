@@ -180,7 +180,14 @@ def _parse_llm_response(
     # Build results keyed by batch index
     result_by_id: dict[int, dict[str, Any]] = {}
     for m in matches_list:
-        idx = m.get("id", 0)
+        raw_id = m.get("id", 0)
+        # LLM may return "A1", "A2", etc. or plain integers 1, 2, etc.
+        if isinstance(raw_id, str):
+            raw_id = raw_id.lstrip("AaBb")
+        try:
+            idx = int(raw_id)
+        except (ValueError, TypeError):
+            continue
         result_by_id[idx] = {
             "match": m.get("match", 0),
             "confidence": m.get("confidence", "low"),
