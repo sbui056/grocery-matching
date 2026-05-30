@@ -82,7 +82,8 @@ def safe_parse_json(value: Any) -> dict[str, Any]:
         return {}
     try:
         cleaned = value.replace("None", "null").replace("True", "true").replace("False", "false")
-        return json.loads(cleaned)
+        result = json.loads(cleaned)
+        return result if isinstance(result, dict) else {}
     except (json.JSONDecodeError, ValueError):
         return {}
 
