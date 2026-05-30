@@ -143,6 +143,20 @@ def load_and_preprocess() -> tuple[pd.DataFrame, pd.DataFrame]:
     store_b = pd.read_csv(STORE_B_PATH, low_memory=False)
     logger.info("Loaded Store B: %d products", len(store_b))
 
+    # Drop rows with non-numeric item_id (malformed data)
+    for label in ("A", "B"):
+        df = store_a if label == "A" else store_b
+        valid = pd.to_numeric(df["item_id"], errors="coerce").notna()
+        n_bad = (~valid).sum()
+        if n_bad > 0:
+            logger.warning("Dropping %d rows with non-numeric item_id from Store %s", n_bad, label)
+            df = df[valid].copy()
+            df["item_id"] = df["item_id"].astype(int)
+            if label == "A":
+                store_a = df
+            else:
+                store_b = df
+
     # Build brand dictionary from Store B
     brand_dict = build_brand_dictionary(store_b)
     logger.info("Brand dictionary: %d known brands", len(brand_dict))
