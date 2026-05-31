@@ -285,16 +285,21 @@ async def run_llm_adjudication(
 
         async def process_batch(batch: list[dict[str, Any]]) -> None:
             async with semaphore:
-                prompt = _format_product_batch(batch, store_a, pipeline_config)
-                response = await _call_llm(client, prompt, oai_config, pipeline_config)
-                results = _parse_llm_response(response, batch)
+                try:
+                    prompt = _format_product_batch(batch, store_a, pipeline_config)
+                    response = await _call_llm(client, prompt, oai_config, pipeline_config)
+                    results = _parse_llm_response(response, batch)
+                except Exception as exc:
+                    logger.warning("Batch failed permanently: %s — treating as no-match", str(exc)[:100])
+                    results = [
+                        {"item_id_a": item["item_id_a"], "item_id_b_llm": None,
+                         "llm_match_idx": 0, "llm_confidence": "error"}
+                        for item in batch
+                    ]
 
-                # Save to checkpoint
                 _append_checkpoint(results)
-
                 for r in results:
                     all_results[r["item_id_a"]] = r
-
                 progress.update(1)
 
         tasks = [process_batch(batch) for batch in batches]

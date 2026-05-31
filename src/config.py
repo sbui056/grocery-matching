@@ -133,7 +133,7 @@ class PipelineConfig:
     # LLM
     llm_products_per_call: int = 5
     llm_candidates_per_product: int = 3
-    llm_concurrency: int = 50
+    llm_concurrency: int = 30
     llm_temperature: float = 0.0
 
     # Thresholds
