@@ -15,7 +15,6 @@ from rapidfuzz import fuzz
 
 from src.config import (
     PipelineConfig,
-    ScoringWeights,
     WALMART_PRIVATE_LABELS,
     WEGMANS_PRIVATE_LABELS,
 )

@@ -8,8 +8,6 @@ reduces the comparison space from ~9.4 billion pairs to ~1-2 billion.
 
 from __future__ import annotations
 
-from typing import Any
-
 import pandas as pd
 
 from src.utils import logger
