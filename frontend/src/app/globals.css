@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FAFAF8;
+  --foreground: #1a1a1a;
+  --surface: #ffffff;
+  --muted: #f4f4f2;
+  --border: #e8e8e4;
+  --border-light: #f0f0ec;
+  --accent: #3b5ccc;
+  --accent-light: #5b7de8;
+  --success: #2d8a56;
+  --warning: #c47d1a;
+  --danger: #c43d3d;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-light: var(--border-light);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-display: var(--font-display);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, "Times New Roman", serif;
+}
+
+/* Chart tooltip */
+.recharts-default-tooltip {
+  background: #ffffff !important;
+  border: 1px solid #e8e8e4 !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06) !important;
+}
+.recharts-tooltip-label {
+  color: #1a1a1a !important;
+  font-weight: 600 !important;
+}
+.recharts-tooltip-item {
+  color: rgba(26, 26, 26, 0.5) !important;
+}
+
+::selection {
+  background: rgba(59, 92, 204, 0.12);
+}

@@ -1,0 +1,124 @@
+{
+  "totalMatches": 24370,
+  "storeAProducts": 233000,
+  "storeBProducts": 55000,
+  "candidatePairsReduced": "9.4B \u2192 4.1B",
+  "pipelineRuntime": "~80 min",
+  "confidence": {
+    "high": 20258,
+    "medium": 3986,
+    "low": 126
+  },
+  "scoreStats": {
+    "mean": 0.68,
+    "median": 0.695,
+    "min": 0.16,
+    "max": 1.0,
+    "p25": 0.594,
+    "p75": 0.77
+  },
+  "signalAverages": {
+    "TF-IDF": 0.456,
+    "Embedding": 0.797,
+    "Brand": 0.836,
+    "Size": 0.76,
+    "Jaccard": 0.434
+  },
+  "scoreDistribution": [
+    {
+      "range": "0\u20130.3",
+      "count": 46
+    },
+    {
+      "range": "0.3\u20130.4",
+      "count": 211
+    },
+    {
+      "range": "0.4\u20130.5",
+      "count": 1640
+    },
+    {
+      "range": "0.5\u20130.6",
+      "count": 4548
+    },
+    {
+      "range": "0.6\u20130.7",
+      "count": 6097
+    },
+    {
+      "range": "0.7\u20130.8",
+      "count": 8101
+    },
+    {
+      "range": "0.8\u20130.9",
+      "count": 3545
+    },
+    {
+      "range": "0.9\u20131.0",
+      "count": 182
+    }
+  ],
+  "topBrandPairs": [
+    {
+      "brandA": "great value",
+      "brandB": "wegmans",
+      "count": 797
+    },
+    {
+      "brandA": "goya",
+      "brandB": "goya",
+      "count": 389
+    },
+    {
+      "brandA": "dove",
+      "brandB": "dove",
+      "count": 217
+    },
+    {
+      "brandA": "febreze",
+      "brandB": "febreze",
+      "count": 211
+    },
+    {
+      "brandA": "mccormick",
+      "brandB": "mccormick",
+      "count": 185
+    },
+    {
+      "brandA": "glade",
+      "brandB": "glade",
+      "count": 149
+    },
+    {
+      "brandA": "neutrogena",
+      "brandB": "neutrogena",
+      "count": 146
+    },
+    {
+      "brandA": "old spice",
+      "brandB": "old spice",
+      "count": 131
+    },
+    {
+      "brandA": "olay",
+      "brandB": "olay",
+      "count": 120
+    },
+    {
+      "brandA": "pillsbury",
+      "brandB": "pillsbury",
+      "count": 119
+    },
+    {
+      "brandA": "crest",
+      "brandB": "crest",
+      "count": 113
+    },
+    {
+      "brandA": "cerave",
+      "brandB": "cerave",
+      "count": 111
+    }
+  ],
+  "privateLabelMatches": 953
+}
