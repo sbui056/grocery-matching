@@ -1,115 +1,150 @@
 "use client";
 
-import {
-  Layers, Grid3x3, Search, BarChart3, Brain, FileOutput,
-} from "lucide-react";
-
 const PHASES = [
-  { icon: Layers, title: "Pre-processing", sub: "Normalize & Extract", desc: "Lowercase, strip symbols, extract brands (54%→80%) and sizes (17%→57%). Filter to 170K matchable." },
-  { icon: Grid3x3, title: "Category Blocking", sub: "Reduce Search Space", desc: "Map categories across 12 blocks. Cut candidate pairs from 9.4B to 4.1B (60% reduction)." },
-  { icon: Search, title: "Candidate Generation", sub: "Dual Retrieval", desc: "TF-IDF bigrams for lexical matching + OpenAI embeddings for semantic similarity. Union of top-20 each." },
-  { icon: BarChart3, title: "Multi-Signal Scoring", sub: "5 Weighted Signals", desc: "Composite from TF-IDF (0.25), embedding (0.25), brand (0.25), size (0.15), Jaccard (0.10)." },
-  { icon: Brain, title: "LLM Adjudication", sub: "GPT-5.4-Nano", desc: "JSON-mode verification, 5 products/call, 30 concurrency, checkpoint/resume for fault tolerance." },
-  { icon: FileOutput, title: "Output", sub: "Final Matches", desc: "24,370 verified matches with confidence levels and full diagnostic scores." },
+  { n: "01", name: "Pre-process", desc: "Normalize names, then extract brand and size from raw text — lifting brand coverage 54%→80% and size 17%→57%." },
+  { n: "02", name: "Block", desc: "Map every product into 12 compatible category groups, cutting 9.4B possible comparisons down to 4.1B." },
+  { n: "03", name: "Candidates", desc: "TF-IDF bigrams catch literal matches; OpenAI embeddings catch semantic ones. Union of the top-20 from each." },
+  { n: "04", name: "Score", desc: "Five weighted signals collapse into a single composite score for every surviving candidate pair." },
+  { n: "05", name: "LLM", desc: "An LLM verifies each candidate — five products per call, JSON-mode, with checkpoint/resume for fault tolerance." },
+  { n: "06", name: "Output", desc: "24,370 verified matches, each tagged with a confidence level and a full breakdown of its diagnostic scores." },
 ];
 
-const WEIGHTS = [
-  { signal: "TF-IDF", weight: 0.25, color: "#3b5ccc", desc: "Lexical similarity via bigram vectorization" },
-  { signal: "Embedding", weight: 0.25, color: "#6c5ce7", desc: "Semantic similarity via OpenAI embeddings" },
-  { signal: "Brand", weight: 0.25, color: "#2d8a56", desc: "Exact, private-label cross, or fuzzy match" },
-  { signal: "Size", weight: 0.15, color: "#c47d1a", desc: "Unit-normalized comparison" },
-  { signal: "Jaccard", weight: 0.10, color: "#0891B2", desc: "Word-level set overlap" },
+const SIGNALS = [
+  { key: "TF-IDF", w: 0.25, color: "#2b46e0", desc: "Lexical overlap via bigram vectors" },
+  { key: "Embedding", w: 0.25, color: "#5b73ee", desc: "Semantic similarity, OpenAI vectors" },
+  { key: "Brand", w: 0.25, color: "#2d8a56", desc: "Exact, private-label, or fuzzy match" },
+  { key: "Size", w: 0.15, color: "#bd7a1c", desc: "Unit-normalized quantity comparison" },
+  { key: "Jaccard", w: 0.10, color: "#0e8a9b", desc: "Word-level set overlap" },
 ];
 
 export default function MethodologySection() {
   return (
-    <section className="px-6 sm:px-10 py-12 sm:py-16 max-w-[1100px] mx-auto" id="pipeline">
-      <h2 className="text-[20px] sm:text-[24px] font-medium tracking-[-0.02em] text-foreground mb-6">
-        How it works
-      </h2>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] gap-4">
-        {/* Pipeline card */}
-        <div className="bg-surface border border-border rounded-xl p-5 sm:p-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-foreground/25 mb-5">
-            Pipeline · 6 phases
-          </p>
-
-          {PHASES.map((phase, i) => {
-            const Icon = phase.icon;
-            return (
+    <section className="sec" id="methodology">
+      <div className="wrap">
+        <div className="sec-head" data-reveal>
+          <h2 className="h2">How the pipeline works</h2>
+        </div>
+        <div className="mth-grid">
+          <div>
+            <div className="mono" style={{ fontSize: 10, letterSpacing: ".16em", textTransform: "uppercase", color: "var(--ghost)", marginBottom: 8 }}>
+              The six stages
+            </div>
+            {PHASES.map((p, i) => (
               <div
-                key={phase.title}
-                className={`flex items-start gap-3 py-3.5 ${
-                  i < PHASES.length - 1 ? "border-b border-border/50" : ""
-                }`}
+                key={p.n}
+                data-reveal
+                style={{
+                  transitionDelay: i * 55 + "ms",
+                  display: "grid",
+                  gridTemplateColumns: "42px 1fr",
+                  gap: 16,
+                  padding: "18px 0",
+                  borderTop: i > 0 ? "1px solid var(--hair)" : "none",
+                  paddingTop: i === 0 ? 6 : 18,
+                }}
               >
-                <Icon className="w-4 h-4 text-foreground/15 shrink-0 mt-0.5" />
-                <div className="min-w-0">
-                  <div className="flex items-baseline gap-2 mb-0.5">
-                    <span className="text-[13px] font-medium text-foreground/75">{phase.title}</span>
-                    <span className="text-[11px] text-foreground/20">{phase.sub}</span>
+                <div className="mono" style={{ fontSize: 13, color: "var(--accent)", paddingTop: 2 }}>
+                  {p.n}
+                </div>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 16, letterSpacing: "-.01em", marginBottom: 5 }}>
+                    {p.name}
                   </div>
-                  <p className="text-[12px] leading-[1.55] text-foreground/35">{phase.desc}</p>
+                  <div style={{ fontSize: 14, lineHeight: 1.55, color: "var(--muted)" }}>
+                    {p.desc}
+                  </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-
-        {/* Scoring card */}
-        <div className="bg-surface border border-border rounded-xl p-5 sm:p-6">
-          <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-foreground/25 mb-5">
-            Scoring Formula
-          </p>
-
-          {/* Formula */}
-          <div className="font-mono text-[12px] mb-6 flex flex-wrap items-baseline gap-x-1.5 gap-y-1">
-            <span className="text-foreground/60 font-medium">composite</span>
-            <span className="text-foreground/30">=</span>
-            {WEIGHTS.map((w, i) => (
-              <span key={w.signal} className="whitespace-nowrap flex items-baseline gap-0.5">
-                <span className="font-medium" style={{ color: w.color }}>{w.weight}</span>
-                <span className="text-foreground/25">×</span>
-                <span style={{ color: w.color }}>{w.signal.toLowerCase()}</span>
-                {i < WEIGHTS.length - 1 && <span className="text-foreground/30 ml-1">+</span>}
-              </span>
             ))}
           </div>
 
-          {/* Stacked bar */}
-          <div className="mb-6">
-            <div className="flex h-2 rounded-full overflow-hidden mb-1.5">
-              {WEIGHTS.map((w) => (
-                <div key={w.signal} className="h-full" style={{ width: `${w.weight * 100}%`, background: w.color, opacity: 0.4 }} />
-              ))}
+          <div className="card" style={{ padding: 26 }} data-reveal>
+            <div className="mono" style={{ fontSize: 10, letterSpacing: ".16em", textTransform: "uppercase", color: "var(--ghost)", marginBottom: 8 }}>
+              Composite scoring
             </div>
-            <div className="flex">
-              {WEIGHTS.map((w) => (
-                <div key={w.signal} style={{ width: `${w.weight * 100}%` }}>
-                  <span className="text-[9px] text-foreground/20">{w.signal}</span>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Signal details */}
-          <div className="space-y-3">
-            {WEIGHTS.map((w) => (
-              <div key={w.signal} className="flex items-start gap-2.5">
-                <div className="w-1.5 h-1.5 rounded-full shrink-0 mt-[5px]" style={{ background: w.color, opacity: 0.4 }} />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <span className="text-[12px] font-medium text-foreground/60">{w.signal}</span>
-                    <span className="text-[11px] font-mono text-foreground/18 tabular-nums">{(w.weight * 100).toFixed(0)}%</span>
-                  </div>
-                  <p className="text-[11px] text-foreground/25 leading-relaxed">{w.desc}</p>
+            {/* Formula */}
+            <div
+              className="mono"
+              style={{
+                fontSize: 12.5,
+                lineHeight: 1.9,
+                margin: "14px 0 22px",
+                background: "var(--bg)",
+                border: "1px solid var(--hair)",
+                borderRadius: 9,
+                padding: "14px 16px",
+              }}
+            >
+              <span style={{ color: "var(--ink)", fontWeight: 600 }}>composite</span>{" "}
+              <span style={{ color: "var(--ghost)" }}>=</span>
+              <br />
+              {SIGNALS.map((s, i) => (
+                <span key={s.key}>
+                  <span style={{ color: s.color, fontWeight: 600 }}>{s.w.toFixed(2)}</span>
+                  <span style={{ color: "var(--ghost)" }}>·</span>
+                  <span style={{ color: s.color }}>{s.key.toLowerCase()}</span>
+                  {i < SIGNALS.length - 1 && (
+                    <span style={{ color: "var(--ghost)" }}>{"  +  "}</span>
+                  )}
+                </span>
+              ))}
+            </div>
+
+            {/* Weight bar */}
+            <div style={{ display: "flex", height: 8, borderRadius: 5, overflow: "hidden", marginBottom: 5 }}>
+              {SIGNALS.map((s, i) => (
+                <i
+                  key={s.key}
+                  className="grow-x"
+                  style={{
+                    display: "block",
+                    width: s.w * 100 + "%",
+                    background: s.color,
+                    opacity: 0.85,
+                    transitionDelay: i * 70 + "ms",
+                  }}
+                />
+              ))}
+            </div>
+            <div className="mono" style={{ display: "flex", fontSize: 9, color: "var(--ghost)", marginBottom: 22 }}>
+              {SIGNALS.map((s) => (
+                <span key={s.key} style={{ width: s.w * 100 + "%" }}>
+                  {s.w * 100}%
+                </span>
+              ))}
+            </div>
+
+            {/* Signal rows */}
+            {SIGNALS.map((s) => (
+              <div
+                key={s.key}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: 11,
+                  padding: "11px 0",
+                  borderTop: "1px solid var(--hair)",
+                }}
+              >
+                <span style={{ width: 9, height: 9, borderRadius: 3, marginTop: 4, flexShrink: 0, background: s.color }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: 13.5 }}>{s.key}</div>
+                  <div style={{ fontSize: 12, color: "var(--faint)", marginTop: 2 }}>{s.desc}</div>
                 </div>
+                <span className="mono" style={{ fontSize: 12, color: "var(--muted)" }}>
+                  {s.w.toFixed(2)}
+                </span>
               </div>
             ))}
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .mth-grid { display: grid; grid-template-columns: 1.08fr 1fr; gap: 48px; align-items: start; }
+        @media (max-width: 900px) { .mth-grid { grid-template-columns: 1fr; gap: 36px; } }
+      `}</style>
     </section>
   );
 }

@@ -1,8 +1,26 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
 import type { Summary, Match } from "@/lib/types";
-import PipelineDiagram from "./PipelineDiagram";
+import CountUp from "./CountUp";
+
+const PHASE_NODES = [
+  { name: "Pre-process", sub: "normalize · extract", mv: "170K", mk: "matchable" },
+  { name: "Block", sub: "12 categories", mv: "4.1B", mk: "pairs" },
+  { name: "Candidates", sub: "TF-IDF + embed", mv: "~40", mk: "per item" },
+  { name: "Score", sub: "5 signals", mv: "top 5", mk: "ranked" },
+  { name: "LLM", sub: "gpt-5.4-nano", mv: "~15K", mk: "LLM calls", llm: true },
+];
+
+function FlowArrow() {
+  return (
+    <div className="arr">
+      <svg width="30" height="12" viewBox="0 0 30 12" fill="none">
+        <line x1="0" y1="6" x2="22" y2="6" stroke="#16171b" strokeOpacity="0.22" strokeWidth="1.2" />
+        <path d="M21 2.5 L27 6 L21 9.5" stroke="#16171b" strokeOpacity="0.3" strokeWidth="1.2" fill="none" />
+      </svg>
+    </div>
+  );
+}
 
 export default function Hero({
   summary,
@@ -11,113 +29,97 @@ export default function Hero({
   summary: Summary;
   matches: Match[];
 }) {
-  const example = matches.find(
-    (m) =>
-      m.brandA.toLowerCase() === "great value" &&
-      m.brandB.toLowerCase() === "wegmans" &&
-      m.confidence === "high"
-  ) ?? matches[0];
-
   return (
-    <section className="pt-24 sm:pt-28 pb-10 sm:pb-14">
-      <div className="max-w-[1100px] mx-auto px-6 sm:px-10">
-        {/* Header — compact */}
-        <div className="mb-8 sm:mb-10">
-          <h1 className="text-[26px] sm:text-[34px] lg:text-[40px] font-medium tracking-[-0.025em] leading-[1.15] text-foreground max-w-2xl mb-3">
-            Product matching across 233K Walmart and 55K Wegmans items
-          </h1>
-
-          <p className="text-[15px] text-foreground/40 max-w-lg mb-4">
-            Hybrid TF-IDF + embedding + LLM pipeline producing 24,370 verified matches for competitive price indexing.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px]">
-            <span className="font-mono text-foreground/50">24,370 matches</span>
-            <span className="text-foreground/15">·</span>
-            <span className="font-mono text-foreground/50">83% high confidence</span>
-            <span className="text-foreground/15">·</span>
-            <span className="font-mono text-foreground/50">~80 min runtime</span>
-            <span className="text-foreground/15">·</span>
-            <span className="font-mono text-foreground/50">6 phases</span>
-          </div>
-        </div>
-
-        {/* Pipeline diagram — full width, prominent */}
-        <div className="bg-surface border border-border rounded-xl p-6 sm:p-8 mb-4">
-          <PipelineDiagram />
-        </div>
-
-        {/* Example match — full width, smaller supporting card */}
-        {example && (
-          <div className="bg-surface border border-border rounded-xl p-5 sm:p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <p className="text-[11px] font-medium uppercase tracking-[0.15em] text-foreground/25">
-                Example Match
-              </p>
-              <span className="text-[10px] font-mono text-success/70 bg-success/8 px-1.5 py-0.5 rounded">
-                {(example.composite * 100).toFixed(0)}% composite
-              </span>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-8">
-              {/* Match pair */}
-              <div className="flex items-start gap-4 flex-1 min-w-0">
-                <div className="flex-1 min-w-0">
-                  <span className="text-[10px] font-medium uppercase tracking-wider text-accent/50 mb-1 block">
-                    Walmart
-                  </span>
-                  <p className="text-[13px] text-foreground/75 leading-snug mb-1.5">
-                    {example.nameA}
-                  </p>
-                  <div className="flex gap-1.5">
-                    {example.brandA && (
-                      <span className="text-[10px] text-foreground/30 bg-muted px-1.5 py-0.5 rounded">{example.brandA}</span>
-                    )}
-                    {example.sizeA && (
-                      <span className="text-[10px] text-foreground/20 bg-muted px-1.5 py-0.5 rounded">{example.sizeA}</span>
-                    )}
-                  </div>
-                </div>
-
-                <ArrowRight className="w-3.5 h-3.5 text-foreground/12 shrink-0 mt-3" />
-
-                <div className="flex-1 min-w-0">
-                  <span className="text-[10px] font-medium uppercase tracking-wider text-success/50 mb-1 block">
-                    Wegmans
-                  </span>
-                  <p className="text-[13px] text-foreground/75 leading-snug mb-1.5">
-                    {example.nameB}
-                  </p>
-                  <div className="flex gap-1.5">
-                    {example.brandB && (
-                      <span className="text-[10px] text-foreground/30 bg-muted px-1.5 py-0.5 rounded">{example.brandB}</span>
-                    )}
-                    {example.sizeB && (
-                      <span className="text-[10px] text-foreground/20 bg-muted px-1.5 py-0.5 rounded">{example.sizeB}</span>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Signal scores */}
-              <div className="flex sm:flex-col gap-4 sm:gap-2 sm:border-l sm:border-border sm:pl-6 shrink-0">
-                {[
-                  { label: "TF-IDF", val: example.tfidf },
-                  { label: "Embed", val: example.embedding },
-                  { label: "Brand", val: example.brand },
-                  { label: "Size", val: example.size },
-                  { label: "Jaccard", val: example.jaccard },
-                ].map((s) => (
-                  <div key={s.label} className="flex items-baseline gap-2 sm:gap-3">
-                    <span className="text-[10px] text-foreground/20 w-10 sm:text-right">{s.label}</span>
-                    <span className="text-[12px] font-mono text-foreground/45 tabular-nums">{(s.val * 100).toFixed(0)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
+    <header className="wrap hero" id="top">
+      <h1 data-reveal>
+        Pairing 233K Walmart products with 55K Wegmans products
+        <span className="mut"> — without a single shared barcode.</span>
+      </h1>
+      <div className="sub" data-reveal style={{ transitionDelay: "70ms" }}>
+        A hybrid TF-IDF + embedding + LLM pipeline that finds each product's
+        closest equivalent at the other store, then verifies every match.
       </div>
-    </section>
+      <div className="meta" data-reveal style={{ transitionDelay: "140ms" }}>
+        <b>24,370</b>
+        <span>matches</span>
+        <span className="x">/</span>
+        <b>83%</b>
+        <span>high confidence</span>
+        <span className="x">/</span>
+        <b>
+          ~80<span style={{ fontWeight: 400, fontSize: 11 }}>min</span>
+        </b>
+        <span>runtime</span>
+      </div>
+      <div className="diagram" data-reveal style={{ transitionDelay: "210ms" }}>
+        <div className="dlab">
+          <span>How it works — 6 stages</span>
+        </div>
+        <div className="flowscroll">
+          <div className="flow">
+            <div className="sources">
+              <div className="src a">
+                <span className="sq" />
+                <span className="nm">Walmart</span>
+                <span className="ct">233K</span>
+              </div>
+              <div className="src b">
+                <span className="sq" />
+                <span className="nm">Wegmans</span>
+                <span className="ct">55K</span>
+              </div>
+            </div>
+            <div className="merge">
+              <svg width="46" height="104" viewBox="0 0 46 104" fill="none">
+                <path
+                  d="M0 26 C26 26 20 52 44 52"
+                  className="flowdash"
+                  stroke="#2b46e0"
+                  strokeOpacity="0.45"
+                  strokeWidth="1.3"
+                  strokeDasharray="4 3"
+                />
+                <path
+                  d="M0 78 C26 78 20 52 44 52"
+                  className="flowdash"
+                  stroke="#2d8a56"
+                  strokeOpacity="0.45"
+                  strokeWidth="1.3"
+                  strokeDasharray="4 3"
+                />
+                <path
+                  d="M38 48.5 L44 52 L38 55.5"
+                  stroke="#16171b"
+                  strokeOpacity="0.3"
+                  strokeWidth="1.2"
+                  fill="none"
+                />
+              </svg>
+            </div>
+            <div className="nodes">
+              {PHASE_NODES.map((nd) => (
+                <span key={nd.name} style={{ display: "contents" }}>
+                  <div className={"node" + (nd.llm ? " llm" : "")}>
+                    <span className="nm">{nd.name}</span>
+                    <span className="nsub">{nd.sub}</span>
+                    <div className="foot">
+                      <span className="mv">{nd.mv}</span>
+                      <span className="mk">{nd.mk}</span>
+                    </div>
+                  </div>
+                  <FlowArrow />
+                </span>
+              ))}
+            </div>
+            <div className="out">
+              <span className="ov">
+                <CountUp value={24370} />
+              </span>
+              <span className="ok">verified matches</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
   );
 }

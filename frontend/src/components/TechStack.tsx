@@ -1,53 +1,55 @@
 "use client";
 
 const DECISIONS = [
-  { title: "Dual retrieval", desc: "TF-IDF for lexical matching, embeddings for semantic — the union captures both." },
-  { title: "LLM as verifier", desc: "Verify pre-filtered candidates instead of searching 55K products. ~15K calls, not millions." },
-  { title: "Private-label cross-matching", desc: "Great Value ↔ Wegmans get a 0.7 brand score, surfacing when name/size/category align." },
-  { title: "Checkpoint / resume", desc: "Embeddings to .npy, LLM results to JSONL. Crashed runs resume from last checkpoint." },
-  { title: "Category blocking", desc: "Frozen ↔ Frozen, not Frozen ↔ Wine. 60% search space reduction while maintaining recall." },
+  { t: "Dual retrieval", d: "TF-IDF nails literal name overlap; embeddings catch semantic equivalents. Running both and taking the union means neither blind spot costs a match." },
+  { t: "LLM as verifier, not generator", d: "The model judges pre-filtered candidates instead of searching all 55K products — bounding cost at ~15K calls rather than hundreds of millions." },
+  { t: "Private-label cross-matching", d: "Great Value ↔ Wegmans store brands get a 0.7 brand score instead of zero, so private-label equivalents surface when name, size, and category line up." },
+  { t: "Checkpoint & resume", d: "Embeddings cache to .npy, LLM verdicts to JSONL. A crashed 80-minute run picks up where it left off instead of starting over." },
+  { t: "Category blocking", d: "Comparisons stay within compatible categories — Frozen to Frozen, never Frozen to Wine — cutting the search space 60% while holding recall." },
 ];
 
-const TECH = ["Python", "OpenAI API", "scikit-learn", "NumPy", "pandas", "asyncio", "httpx", "rapidfuzz"];
+const STACK = ["Python", "OpenAI API", "scikit-learn", "NumPy", "pandas", "asyncio", "httpx", "rapidfuzz"];
 
 export default function TechStack() {
   return (
-    <section className="px-6 sm:px-10 py-12 sm:py-16 max-w-[1100px] mx-auto" id="design">
-      <h2 className="text-[20px] sm:text-[24px] font-medium tracking-[-0.02em] text-foreground mb-6">
-        Design Decisions
-      </h2>
-
-      <div className="bg-surface border border-border rounded-xl overflow-hidden">
-        {DECISIONS.map((d, i) => (
-          <div
-            key={d.title}
-            className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 px-5 sm:px-6 py-4 border-b border-border/40"
-          >
-            <h3 className="text-[13px] font-medium text-foreground/60 sm:w-52 shrink-0">
-              {d.title}
-            </h3>
-            <p className="text-[13px] leading-[1.55] text-foreground/35">
-              {d.desc}
-            </p>
-          </div>
-        ))}
-
-        <div className="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 px-5 sm:px-6 py-4">
-          <span className="text-[13px] font-medium text-foreground/60 sm:w-52 shrink-0">
-            Stack
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {TECH.map((t) => (
-              <span
-                key={t}
-                className="text-[12px] text-foreground/40 bg-foreground/[0.03] px-2 py-0.5 rounded"
-              >
-                {t}
-              </span>
+    <section className="sec" id="design">
+      <div className="wrap">
+        <div className="sec-head" data-reveal>
+          <h2 className="h2">Decisions &amp; tradeoffs</h2>
+        </div>
+        <div className="dec-list">
+          {DECISIONS.map((d, i) => (
+            <div className="dec-row" key={d.t} data-reveal style={{ transitionDelay: i * 45 + "ms" }}>
+              <div className="dt">{d.t}</div>
+              <div className="dd">{d.d}</div>
+            </div>
+          ))}
+        </div>
+        <div className="dec-stack" data-reveal>
+          <div className="sl">Built with</div>
+          <div className="dec-chips">
+            {STACK.map((s) => (
+              <span className="dec-chip" key={s}>{s}</span>
             ))}
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        .dec-list { border-top: 1px solid var(--hair); }
+        .dec-row { display: grid; grid-template-columns: 240px 1fr; gap: 32px; padding: 22px 0; border-bottom: 1px solid var(--hair); align-items: baseline; }
+        @media (max-width: 760px) { .dec-row { grid-template-columns: 1fr; gap: 8px; padding: 18px 0; } }
+        .dec-row .dt { font-weight: 600; font-size: 16px; letter-spacing: -.01em; }
+        .dec-row .dd { font-size: 14px; line-height: 1.6; color: var(--muted); max-width: 640px; }
+        .dec-stack { margin-top: 38px; display: grid; grid-template-columns: 240px 1fr; gap: 32px; align-items: baseline; }
+        @media (max-width: 760px) { .dec-stack { grid-template-columns: 1fr; gap: 14px; } }
+        .dec-stack .sl { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ghost); }
+        .dec-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+        .dec-chip { font-family: var(--mono); font-size: 12px; color: var(--muted); background: var(--surface);
+          border: 1px solid var(--border); padding: 6px 11px; border-radius: 8px; white-space: nowrap;
+          transition: transform .16s ease, border-color .16s ease, color .16s ease; }
+        .dec-chip:hover { transform: translateY(-1px); border-color: rgba(22,23,27,.26); color: var(--ink); }
+      `}</style>
     </section>
   );
 }
