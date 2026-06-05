@@ -28,9 +28,14 @@ checkpoints/
 # Credentials
 openai_creds.yaml
 
-# Design handoff (reference only, not part of the app)
+# Design reference files
 design_handoff_grocery_matching/
 
 # Frontend build
 frontend/node_modules/
 frontend/.next/
+
+# Claude config
+.claude/
+CLAUDE.md
+AGENTS.md
